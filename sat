@@ -11,6 +11,7 @@ apt install -y proot-distro
 proot-distro install alpine && \
 echo 'INSTALL SUCCESSFUL'
 ## change login shell to bash and install basic packages
-proot-distro login alpine -- apk add curl git bash shadow fastfetch && chsh -s /bin/bash root >/dev/null
+proot-distro login alpine -- apk add curl git bash shadow fastfetch
+proot-distro login alpine -- chsh -s /bin/bash root >/dev/null
 proot-distro login alpine -- fastfetch
 proot-distro login alpine

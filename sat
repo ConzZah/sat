@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+## SET UP TERMUX TO BOOT INTO ALPINE PROOT
+## AUTHOR: ConzZah
+## LICENSE: MIT
+## backup .profile, should it exist, so we don't delete anything
+[ -f .profile ] && [ ! -f .profile_bak ] && mv .profile .profile_bak
+echo 'proot-distro login alpine' > .profile
+apt update; apt upgrade -y
+! command -v proot-distro >/dev/null && \
+apt install -y proot-distro
+proot-distro install alpine && \
+echo 'INSTALL SUCCESSFUL'
+## change login shell to bash and install basic packages
+proot-distro login alpine -- apk add curl git bash shadow && chsh root -s bash
+proot-distro login alpine

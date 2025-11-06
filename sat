@@ -2,12 +2,23 @@
 ## SET UP TERMUX TO BOOT INTO ALPINE PROOT
 ## AUTHOR: ConzZah
 ## LICENSE: MIT
-## set path to alpine prootfs
-alprootfs="$PREFIX/var/lib/proot-distro/installed-rootfs/alpine"
+echo -e '\n== setup-alpine-termux // (c) ConzZah 2025 =='
+## ask user if they want to start into alpine by default
+echo -e '\nSTART ALPINE ON LOGIN?\n'
+read -rp '[y/N]' yn
+case $yn in 
+n|N) echo 'NOT STARTING ALPINE ON LOGIN'
+## when choosing no, also remove the login line from .profile (should it be there)
+[ -f .profile ] && sed -i 's#proot-distro login alpine##g' .profile ;;
+y|Y) echo 'STARTING ALPINE ON LOGIN'
 ## backup .profile, should it exist, so we don't delete anything
 [ -f .profile ] && [ ! -f .profile_bak ] && mv .profile .profile_bak
 ## set up termux to start alpine on startup
-echo 'proot-distro login alpine' > .profile
+echo 'proot-distro login alpine' > .profile ;;
+esac
+
+## set path to alpine prootfs
+alprootfs="$PREFIX/var/lib/proot-distro/installed-rootfs/alpine"
 ## update termux packages before continuing
 apt update && apt upgrade -y && \
 ! command -v proot-distro >/dev/null && \

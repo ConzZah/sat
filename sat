@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
-## SET UP TERMUX TO BOOT INTO ALPINE PROOT
-## AUTHOR: ConzZah
+## PROJECT: setup-alpine-termux
+## AUTHOR:  ConzZah
 ## LICENSE: MIT
 echo -e '\n== setup-alpine-termux // (c) ConzZah 2025 =='
 ## ask user if they want to start into alpine by default
 echo -e '\nSTART ALPINE ON LOGIN?\n'
 read -rp '[y/N]' yn
-case $yn in 
+case $yn in
 n|N) echo 'NOT STARTING ALPINE ON LOGIN'
-## when choosing no, also remove the login line from .profile (should it be there)
-[ -f .profile ] && sed -i 's#proot-distro login alpine##g' .profile ;;
+## when choosing no, also remove the login line from "$HOME/.profile" (should it be there)
+[ -f "$HOME/.profile" ] && sed -i 's#proot-distro login alpine##g' "$HOME/.profile" ;;
 y|Y) echo 'STARTING ALPINE ON LOGIN'
 ## backup .profile, should it exist, so we don't delete anything
-[ -f .profile ] && [ ! -f .profile_bak ] && mv .profile .profile_bak
+[ -f "$HOME/.profile" ] && [ ! -f "$HOME/.profile_bak" ] && mv "$HOME/.profile" "$HOME/.profile_bak"
 ## set up termux to start alpine on startup
-echo 'proot-distro login alpine' > .profile ;;
+echo 'proot-distro login alpine' > "$HOME/.profile" ;;
 esac
 
 ## set path to alpine prootfs
@@ -26,7 +26,7 @@ apt install -y proot-distro
 [ ! -d "$alprootfs" ] && proot-distro install alpine && \
 echo 'INSTALL SUCCESSFUL'
 ## change login shell to bash and install basic packages
-proot-distro login alpine -- apk add curl git bash shadow fastfetch 
+proot-distro login alpine -- apk add curl git bash shadow fastfetch
 proot-distro login alpine -- chsh -s /bin/bash root >/dev/null
 ## display alpine's motd on startup
 echo 'clear; echo; cat /etc/motd' >> "$alprootfs/root/.profile"

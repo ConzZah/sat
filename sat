@@ -8,8 +8,9 @@ alprootfs="$PREFIX/var/lib/proot-distro/installed-rootfs/alpine"
 [ -f .profile ] && [ ! -f .profile_bak ] && mv .profile .profile_bak
 ## set up termux to start alpine on startup
 echo 'proot-distro login alpine' > .profile
-## move termux motd so we don't display both 
+## move termux motd stuff so we don't display both 
 mv -f $PREFIX/etc/motd $PREFIX/etc/.motd &>/dev/null
+mv -f $PREFIX/etc/motd.sh $PREFIX/etc/.motd.sh &>/dev/null
 ## update termux packages before continuing
 apt update && apt upgrade -y && \
 ! command -v proot-distro >/dev/null && \

@@ -31,10 +31,15 @@ printf '%s\n' "$alp_alias" >> "$HOME/.profile"
 ## add .profile to $alprootfs to isolate termux binaries
 [ ! -f  ${alprootfs}/root/.profile ] && \
 printf '%s\n' '# exclude termux bins, so we dont use them when building
-PATH="$(echo "$PATH"| sed "s#:/data/data/com.termux/files/usr/bin##g")"' > ${alprootfs}/root/.profile
+PATH="$(echo "$PATH"| sed "s#:/data/data/com.termux/files/usr/bin##g")"
+
+# include git from termux to avoid "function not implemented" when attempting to clone on some devices
+[ -f "/data/data/com.termux/files/usr/bin/git" ] && \
+alias git="/data/data/com.termux/files/usr/bin/git"
+' > ${alprootfs}/root/.profile
 
 ## change login shell to bash and install basic packages
-proot-distro login alpine -- apk add build-base curl git bash nano shadow fastfetch
+proot-distro login alpine -- apk add build-base curl bash nano shadow fastfetch
 proot-distro login alpine -- chsh -s /bin/bash root >/dev/null
 
 ## login

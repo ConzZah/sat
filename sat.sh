@@ -17,6 +17,10 @@ yes| pkg up || exit 1
 ! command -v proot-distro >/dev/null && \
 apt update && apt install -y proot-distro
 
+## if git is not installed, do so now
+! command -v git >/dev/null && \
+apt update && apt install -y git
+
 ## install alpine
 proot-distro install alpine
 
@@ -33,13 +37,16 @@ printf '%s\n' "$alp_alias" >> "$HOME/.profile"
 printf '%s\n' '# exclude termux bins, so we dont use them when building
 PATH="$(echo "$PATH"| sed "s#:/data/data/com.termux/files/usr/bin##g")"
 
-# include git from termux to avoid "function not implemented" when attempting to clone on some devices
+## remove /usr/bin/git if it exists,
+## and make symlink to termux git to avoid "function not implemented" when attempting to clone on some devices
+[ -f "/usr/bin/git" ] && rm -f "/usr/bin/git"
+
 [ -f "/data/data/com.termux/files/usr/bin/git" ] && \
-alias git="/data/data/com.termux/files/usr/bin/git"
+ln -s "/data/data/com.termux/files/usr/bin/git" "/usr/bin/git"
 ' > ${alprootfs}/root/.profile
 
 ## change login shell to bash and install basic packages
-proot-distro login alpine -- apk add build-base curl bash nano shadow fastfetch
+proot-distro login alpine -- apk add build-base curl bash nano shadow fastfetch git
 proot-distro login alpine -- chsh -s /bin/bash root >/dev/null
 
 ## login
